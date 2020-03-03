@@ -12,16 +12,16 @@ void Store::insert(int64_t id, Properties props)
 		m_equalTitle.insert({ props.title, id });
 }
 
-std::optional<std::reference_wrapper<Properties>> Store::get(int64_t id)
+std::optional<Properties> Store::get(int64_t id)
 {
 	if (m_store.find(id) != m_store.end())
-		return std::optional<std::reference_wrapper<Properties>>{m_store.at(id)};
+		return std::optional<Properties>{m_store.at(id)};
 	return std::nullopt;
 }
 
 void Store::update(int64_t id, const Properties& props)
 {
-	auto get_of_id = get(id);
+	auto get_of_id = get_ref(id);
 	if (get_of_id.has_value())
 	{
 		if (props.title.size() != 0) {
@@ -53,7 +53,7 @@ void Store::remove(int64_t id)
 	auto get_of_id = get(id);
 	if (get_of_id.has_value())
 	{
-		auto iterpair = m_equalTitle.equal_range(get_of_id->get().title);
+		auto iterpair = m_equalTitle.equal_range(get_of_id->title);
 		for (auto it = iterpair.first; it != iterpair.second; ++it) {
 			if (it->second == id) {
 				m_equalTitle.erase(it);
@@ -64,8 +64,14 @@ void Store::remove(int64_t id)
 	m_store.erase(id);
 }
 
-auto Store::queryTitle(std::string title)
+std::pair< mapIterator, mapIterator> Store::queryTitle(std::string title)
 {
 	return m_equalTitle.equal_range(title);
 }
 
+std::optional<std::reference_wrapper<Properties>> Store::get_ref(int64_t id)
+{
+	if (m_store.find(id) != m_store.end())
+		return std::optional<std::reference_wrapper<Properties>>{m_store.at(id)};
+	return std::nullopt;
+}

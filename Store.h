@@ -18,6 +18,8 @@ struct Todo {
     Properties props;
 };
 
+using mapIterator = std::multimap <std::string, int64_t>::iterator;
+
 class Store {
     std::unordered_map<int64_t, Properties> m_store;
     std::multimap <std::string, int64_t> m_equalTitle;
@@ -27,9 +29,11 @@ public:
 	Store& operator=(Store const&) = delete;
 
     void insert(int64_t id, Properties props);
-    std::optional<std::reference_wrapper<Properties>> get(int64_t id);
+    std::optional<Properties> get(int64_t id);
     void update(int64_t id, const Properties& props);
     void remove(int64_t id);
-    auto queryTitle(std::string title);
+    std::pair< mapIterator, mapIterator> queryTitle(std::string title);
+private:
+    std::optional<std::reference_wrapper<Properties>> get_ref(int64_t id);
 };
 
