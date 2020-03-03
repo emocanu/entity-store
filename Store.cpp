@@ -8,8 +8,10 @@ Store::Store()
 void Store::insert(int64_t id, Properties props)
 {
 	auto pair = m_store.emplace(id, props);
-	if (pair.second)
+	if (pair.second) {
 		m_equalTitle.insert({ props.title, id });
+		m_rangeTimestamp.emplace(std::make_pair(props.timestamp, id));
+	}
 }
 
 std::optional<Properties> Store::get(int64_t id)
@@ -42,8 +44,11 @@ void Store::update(int64_t id, const Properties& props)
 		}
 		if (props.description.size() != 0)
 			get_of_id->get().description = props.description;
-		if (props.timestamp != 0.0)
+		if (props.timestamp != 0.0) {
+			// remove from m_rangeTimestamp for the timestamp to be replaced
 			get_of_id->get().timestamp = props.timestamp;
+			// add in m_rangeTimestamp for the new timestamp
+		}
 	}
 }
 
@@ -60,6 +65,7 @@ void Store::remove(int64_t id)
 				break;
 			}
 		}
+		// need to remove from m_rangeTimestamp also
 	}
 	m_store.erase(id);
 }

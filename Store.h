@@ -22,7 +22,12 @@ using mapIterator = std::multimap <std::string, int64_t>::iterator;
 
 class Store {
     std::unordered_map<int64_t, Properties> m_store;
-    std::multimap <std::string, int64_t> m_equalTitle;
+    // equal_range:
+    // std::unordered_multimap - Average case linear in the number of elements with the key key, worst case linear in the size of the container.
+    // that means bad performance for a few titles and lots of ids ... we'll gonna measure that!
+    // std::multimap           - Logarithmic in the size of the container.
+    std::multimap <std::string, int64_t> m_equalTitle; // unordered_multimap here?
+    std::multimap<double, int64_t> m_rangeTimestamp;
 public:
     Store();
 	Store(Store const&) = delete;
@@ -33,6 +38,12 @@ public:
     void update(int64_t id, const Properties& props);
     void remove(int64_t id);
     std::pair< mapIterator, mapIterator> queryTitle(std::string title);
+    
+    // range_query
+    // hmm, if we search the first and the last iterator for our values, does multimap guarantees continuous storage ?
+    // like {1, 1}, {1, 2}, {2,1}, {3,4}, {4,5}
+    // would return [2->4]: {2,1}, {3,4}, {4,5} ???
+
 private:
     std::optional<std::reference_wrapper<Properties>> get_ref(int64_t id);
 };
