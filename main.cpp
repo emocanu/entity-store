@@ -2,6 +2,8 @@
 #include <iostream>
 #include "Store.h"
 
+extern void main_test();
+
 int main(int argc, const char *argv[])
 {
     Store store;
@@ -24,7 +26,7 @@ int main(int argc, const char *argv[])
     
     store.remove(2166);
 
-
+    main_test();
 
     return 0;
 }
