@@ -19,6 +19,7 @@ struct Todo {
 };
 
 using mapIterator = std::multimap <std::string, int64_t>::iterator;
+using mapTimestampIterator = std::multimap <double, int64_t>::iterator;
 
 class Store {
     std::unordered_map<int64_t, Properties> m_store;
@@ -38,11 +39,7 @@ public:
     void update(int64_t id, const Properties& props);
     void remove(int64_t id);
     std::pair< mapIterator, mapIterator> queryTitle(std::string title);
-    
-    // range_query
-    // hmm, if we search the first and the last iterator for our values, does multimap guarantees continuous storage ?
-    // like {1, 1}, {1, 2}, {2,1}, {3,4}, {4,5}
-    // would return [2->4]: {2,1}, {3,4}, {4,5} ???
+    std::pair< mapTimestampIterator, mapTimestampIterator> range_query(double t1, double t2);
 
 private:
     std::optional<std::reference_wrapper<Properties>> get_ref(int64_t id);

@@ -26,7 +26,8 @@ int main(int argc, const char *argv[])
     
     store.remove(2166);
 
-    main_test();
+    //main_test();
+    // TODO range query tests
 
     return 0;
 }

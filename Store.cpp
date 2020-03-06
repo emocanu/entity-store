@@ -46,8 +46,18 @@ void Store::update(int64_t id, const Properties& props)
 			get_of_id->get().description = props.description;
 		if (props.timestamp != 0.0) {
 			// remove from m_rangeTimestamp for the timestamp to be replaced
+			auto iterpair = m_rangeTimestamp.equal_range(get_of_id->get().timestamp);
+			for (auto it = iterpair.first; it != iterpair.second; ++it) {
+				if (it->second == id) {
+					m_rangeTimestamp.erase(it);
+					break;
+				}
+			}
+
 			get_of_id->get().timestamp = props.timestamp;
+
 			// add in m_rangeTimestamp for the new timestamp
+			m_rangeTimestamp.emplace(std::make_pair(props.timestamp, id));
 		}
 	}
 }
@@ -66,6 +76,13 @@ void Store::remove(int64_t id)
 			}
 		}
 		// need to remove from m_rangeTimestamp also
+		auto iterpairt = m_rangeTimestamp.equal_range(get_of_id->timestamp);
+		for (auto it = iterpairt.first; it != iterpairt.second; ++it) {
+			if (it->second == id) {
+				m_rangeTimestamp.erase(it);
+				break;
+			}
+		}
 	}
 	m_store.erase(id);
 }
@@ -73,6 +90,13 @@ void Store::remove(int64_t id)
 std::pair< mapIterator, mapIterator> Store::queryTitle(std::string title)
 {
 	return m_equalTitle.equal_range(title);
+}
+
+std::pair< mapTimestampIterator, mapTimestampIterator> Store::range_query(double t1, double t2)
+{
+	auto pair1 = m_rangeTimestamp.equal_range(t1);
+	auto pair2 = m_rangeTimestamp.equal_range(t2);
+	return std::make_pair(pair1.first, pair2.second);
 }
 
 std::optional<std::reference_wrapper<Properties>> Store::get_ref(int64_t id)
