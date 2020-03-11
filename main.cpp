@@ -27,7 +27,9 @@ int main(int argc, const char *argv[])
     
     store.remove(2166);
 
-    main_test();
+    Store child = store.create_child();
+
+    //main_test();
     // TODO range query tests
 
     return 0;
