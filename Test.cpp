@@ -62,7 +62,7 @@ void update_titles_test(T& store) {
         std::vector<int64_t> ids = store.query_title(title);
         int64_t initialCount = ids.size();
         if (initialCount == 0) {
-            std::cout << "COULD NOT CHECK, ids().size == 0";
+            std::cout << "COULD NOT CHECK, ids().size == 0\n";
             return;
         }
 
@@ -72,11 +72,38 @@ void update_titles_test(T& store) {
         ids = store.query_title(title);
         int64_t afterTitleChangedCount = ids.size();
         if (afterTitleChangedCount == initialCount - 1)
-            std::cout << "PASSED ";
+            std::cout << "PASSED!\n";
         else
-            std::cout << "FAILED ";
-        std::cout << "update title test\n";
+            std::cout << "FAILED!\n";
     }
+
+}
+
+template<typename T>
+void update_timestamp_test(T& store) {
+    TimeToRun t("update_timestamp_test");
+    std::cout << "Starting update_timestamp_test...\n";
+
+    double timestamp1 =  50000.0; // half of the random_double's upper_bound
+    double timestamp2 = timestamp1 + 200.0;
+    std::vector<int64_t> ids = store.range_query(timestamp1, timestamp2);
+    int64_t initialCount = ids.size();
+    if (initialCount == 0) {
+        std::cout << "COULD NOT CHECK, ids().size == 0\n";
+        return;
+    }
+
+    auto p = store.get(ids[0]);
+    p->timestamp = 49000.0; // change timestamp
+    store.update(ids[0], p.value());
+
+    ids = store.range_query(timestamp1, timestamp2);
+    int64_t afterTitleChangedCount = ids.size();
+
+    if (afterTitleChangedCount == initialCount - 1)
+        std::cout << "PASSED!\n";
+    else
+        std::cout << "FAILED!\n";
 
 }
 
@@ -87,7 +114,7 @@ void init_store(T& store) {
     for (int i = 0; i < VEC_M_LEN; ++i) {
         props.title = title_seed.at(rand() % VEC_K_LEN);
         props.description = desc_seed.at(rand() % VEC_K_LEN);
-        props.timestamp = random_double();// don't allow collisions here //timestamp_seed.at(rand() % VEC_LEN * VEC_LEN);
+        props.timestamp = random_double();// don't allow collisions here
         store.insert(i, props);
     }
 }
@@ -97,27 +124,36 @@ void main_test() {
     Store store;
     init_store<Store>(store);
     update_titles_test<Store>(store);
+    update_timestamp_test<Store>(store);
+
     std::cout << "\n\nSTART Simple Store tests: \n";
     SimpleStore sStore;
     init_store<SimpleStore>(sStore);
     update_titles_test<SimpleStore>(sStore);
+    update_timestamp_test<SimpleStore>(sStore);
 }
 
 // Release, x64
 
 //START Store tests :
-//init_store = 6.07839 seconds.
+//init_store = 6.20742 seconds.
 //Starting update_titles_test...
-//Store::query_title = 0.000123147 seconds.
-//Store::query_title = 5.6763e-05 seconds.
-//PASSED update title test
-//update_titles_test = 0.00144858 seconds.
+//Store::query_title = 0.000158103 seconds.
+//Store::query_title = 5.8687e-05 seconds.
+//PASSED!
+//update_titles_test = 0.00155345 seconds.
+//Starting update_timestamp_test...
+//PASSED!
+//update_timestamp_test = 0.000859143 seconds.
 //
 //
 //START Simple Store tests :
-//init_store = 3.69318 seconds.
+//init_store = 3.67279 seconds.
 //Starting update_titles_test...
-//SimpleStore::query_title = 0.030113 seconds.
-//SimpleStore::query_title = 0.0306736 seconds.
-//PASSED update title test
-//update_titles_test = 0.0630103 seconds.
+//SimpleStore::query_title = 0.0308855 seconds.
+//SimpleStore::query_title = 0.0306011 seconds.
+//PASSED!
+//update_titles_test = 0.0638646 seconds.
+//Starting update_timestamp_test...
+//PASSED!
+//update_timestamp_test = 0.0646782 seconds.
