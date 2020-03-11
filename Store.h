@@ -13,11 +13,6 @@ struct Properties {
     // can define here copy ctor
 };
 
-struct Todo {
-    int64_t id;
-    Properties props;
-};
-
 using mapIterator = std::multimap <std::string, int64_t>::iterator;
 using mapTimestampIterator = std::multimap <double, int64_t>::iterator;
 
@@ -38,7 +33,7 @@ public:
     std::optional<Properties> get(int64_t id);
     void update(int64_t id, const Properties& props);
     void remove(int64_t id);
-    std::pair< mapIterator, mapIterator> queryTitle(std::string title);
+    std::vector<int64_t> query_title(std::string title);
     std::pair< mapTimestampIterator, mapTimestampIterator> range_query(double t1, double t2);
 
 private:

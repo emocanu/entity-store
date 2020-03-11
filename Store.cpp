@@ -1,4 +1,5 @@
 #include "Store.h"
+#include "main.h"
 
 Store::Store()
 {
@@ -87,9 +88,15 @@ void Store::remove(int64_t id)
 	m_store.erase(id);
 }
 
-std::pair< mapIterator, mapIterator> Store::queryTitle(std::string title)
+std::vector<int64_t> Store::query_title(std::string title)
 {
-	return m_equalTitle.equal_range(title);
+	TimeToRun t("Store::query_title");
+	std::vector<int64_t> ret;
+	ret.reserve(1000);
+	auto pair = m_equalTitle.equal_range(title);
+	for (auto it = pair.first; it != pair.second; ++it)
+		ret.emplace_back(it->second);
+	return ret;
 }
 
 std::pair< mapTimestampIterator, mapTimestampIterator> Store::range_query(double t1, double t2)

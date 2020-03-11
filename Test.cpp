@@ -1,30 +1,9 @@
 #include <string>
 #include "Store.h"
+#include "SimpleStore.h"
 #include <random>
 #include <vector>
-#include <iostream>
-#include <chrono>
-
-struct TimeToRun
-{
-    typedef std::chrono::high_resolution_clock::time_point moment;
-
-    TimeToRun(char const* string)
-    {
-        str = string;
-        t_start = std::chrono::high_resolution_clock::now();
-    }
-    ~TimeToRun()
-    {
-        using namespace std::chrono;
-        moment t_end = high_resolution_clock::now();
-        duration<double> time_span = duration_cast<duration<double>>(t_end - t_start);
-        std::cout << str << "\t= " << time_span.count() << " seconds.\n";
-    }
-private:
-    moment t_start;
-    char const* str = nullptr;
-};
+#include "main.h"
 
 const int STR_LEN = 16;
 
@@ -72,22 +51,26 @@ static vec_string title_seed = generate_1k_strings();
 static vec_string desc_seed = generate_1k_strings();
 static std::vector<double> timestamp_seed = generate_1m_doubles();
 
-
-void update_titles_test(Store& store) {
+template<typename T, typename P>
+void update_titles_test(T& store) {
     TimeToRun t("update_titles_test");
     std::cout << "Starting update_titles_test...\n";
     int64_t id = rand() % VEC_M_LEN;
     auto rec = store.get(id);
     if (rec.has_value()) {
         std::string title = rec->title;
-        auto ids = store.queryTitle(title);
-        int64_t initialCount = std::distance(ids.first, ids.second);
-        
+        std::vector<int64_t> ids = store.query_title(title);
+        int64_t initialCount = ids.size();
+        if (initialCount == 0) {
+            std::cout << "COULD NOT CHECK, ids().size == 0";
+            return;
+        }
+
         // change title of the first id
-        Properties p = { "Not that random string" };
-        store.update((ids.first)->second, p);
-        ids = store.queryTitle(title);
-        int64_t afterTitleChangedCount = std::distance(ids.first, ids.second);
+        P p = { "Not that random string" };
+        store.update(ids[0], p);
+        ids = store.query_title(title);
+        int64_t afterTitleChangedCount = ids.size();
         if (afterTitleChangedCount == initialCount - 1)
             std::cout << "PASSED ";
         else
@@ -97,9 +80,10 @@ void update_titles_test(Store& store) {
 
 }
 
-void init_store(Store& store) {
+template<typename T, typename P>
+void init_store(T& store) {
     TimeToRun t("init_store");
-    Properties props;
+    P props;
     for (int i = 0; i < VEC_M_LEN; ++i) {
         props.title = title_seed.at(rand() % VEC_K_LEN);
         props.description = desc_seed.at(rand() % VEC_K_LEN);
@@ -109,19 +93,31 @@ void init_store(Store& store) {
 }
 
 void main_test() {
+    std::cout << "START Store tests: \n";
     Store store;
-    init_store(store);
-    update_titles_test(store);
+    init_store<Store, Properties>(store);
+    update_titles_test<Store, Properties>(store);
+    std::cout << "\n\nSTART Simple Store tests: \n";
+    SimpleStore sStore;
+    init_store<SimpleStore, SimpleProperties>(sStore);
+    update_titles_test<SimpleStore, SimpleProperties>(sStore);
 }
 
-// debug
-//init_store = 50.8851 seconds.
-//Starting update_titles_test...
-//PASSED update title test
-//update_titles_test = 0.000817453 seconds.
+// Release, x64
 
-// release
-//init_store = 5.69093 seconds.
+//START Store tests :
+//init_store = 5.92694 seconds.
 //Starting update_titles_test...
+//Store::query_title = 0.000117695 seconds.
+//Store::query_title = 3.3994e-05 seconds.
 //PASSED update title test
-//update_titles_test = 0.00029504 seconds.
+//update_titles_test = 0.00142838 seconds.
+//
+//
+//START Simple Store tests :
+//init_store = 3.64848 seconds.
+//Starting update_titles_test...
+//SimpleStore::query_title = 0.0301515 seconds.
+//SimpleStore::query_title = 0.0303744 seconds.
+//PASSED update title test
+//update_titles_test = 0.0631167 seconds.

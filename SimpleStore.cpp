@@ -1,16 +1,19 @@
 #include "SimpleStore.h"
+#include "main.h"
 #include <algorithm>
 
 SimpleStore::SimpleStore()
 {
-	m_store.reserve(10000);
+	m_store.reserve(1000000);
 }
 
+// Time complexity: amortized constant on average, worst case linear in the size of the m_store
 void SimpleStore::insert(int64_t id, SimpleProperties props)
 {
 	auto pair = m_store.emplace(id, props);
 }
 
+// Time complexity: constant on average, worst case linear in the size of the m_store
 std::optional<SimpleProperties> SimpleStore::get(int64_t id)
 {
 	if (m_store.find(id) != m_store.end())
@@ -18,6 +21,7 @@ std::optional<SimpleProperties> SimpleStore::get(int64_t id)
 	return std::nullopt;
 }
 
+// Time complexity: see get_ref
 void SimpleStore::update(int64_t id, const SimpleProperties& props)
 {
 	auto get_of_id = get_ref(id);
@@ -32,31 +36,40 @@ void SimpleStore::update(int64_t id, const SimpleProperties& props)
 	}
 }
 
+// Time complexity: constant on average, worst case linear in the size of the m_store
 void SimpleStore::remove(int64_t id)
 {
 	m_store.erase(id);
 }
 
 using MapIterator = std::unordered_map<int64_t, SimpleProperties>::const_iterator;
-std::vector<int64_t> SimpleStore::queryTitle(std::string title)
+
+// Time complexity: linear, O(n)
+std::vector<int64_t> SimpleStore::query_title(std::string title)
 {
-	std::vector<int64_t> ids; // hand rolled loop
-	for (MapIterator it = m_store.begin(); it != m_store.end(); ++it)
+	TimeToRun t("SimpleStore::query_title");
+	std::vector<int64_t> ids; 
+	ids.reserve(1000);
+	for (MapIterator it = m_store.begin(); it != m_store.end(); ++it) // hand rolled loop
 		if (it->second.title == title)
 			ids.emplace_back(it->first);
 	return ids;
 }
 
-//std::pair< mapTimestampIterator, mapTimestampIterator> SimpleStore::range_query(double t1, double t2)
-//{
-//	auto pair1 = m_rangeTimestamp.equal_range(t1);
-//	auto pair2 = m_rangeTimestamp.equal_range(t2);
-//	return std::make_pair(pair1.first, pair2.second);
-//}
-//
-//std::optional<std::reference_wrapper<Properties>> SimpleStore::get_ref(int64_t id)
-//{
-//	if (m_store.find(id) != m_store.end())
-//		return std::optional<std::reference_wrapper<SimpleProperties>>{m_store.at(id)};
-//	return std::nullopt;
-//}
+// Time complexity: linear, O(n)
+std::vector<int64_t> SimpleStore::range_query(double t1, double t2)
+{
+	std::vector<int64_t> ids; // hand rolled loop
+	for (MapIterator it = m_store.begin(); it != m_store.end(); ++it)
+		if (it->second.timestamp > t1 && it->second.timestamp < t2)
+			ids.emplace_back(it->first);
+	return ids;
+}
+
+// Helper function, Time complexity: constant on average, worst case linear in the size of the m_store
+std::optional<std::reference_wrapper<SimpleProperties>> SimpleStore::get_ref(int64_t id)
+{
+	if (m_store.find(id) != m_store.end())
+		return std::optional<std::reference_wrapper<SimpleProperties>>{m_store.at(id)};
+	return std::nullopt;
+}

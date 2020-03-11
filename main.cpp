@@ -19,14 +19,14 @@ int main(int argc, const char *argv[])
     Properties p3 = { "Buy Chocolate", "made of cocoa!", 1392348.12233 };
     store.insert(2165, p3);
 
-    auto ids = store.queryTitle("Buy Chocolate");
+    //auto ids = store.query_title("Buy Chocolate");
 
-    for (auto it = ids.first; it != ids.second; ++it)
-        std::cout << it->second << "\n";
+    //for (auto it = ids.first; it != ids.second; ++it)
+    //    std::cout << it->second << "\n";
     
     store.remove(2166);
 
-    //main_test();
+    main_test();
     // TODO range query tests
 
     return 0;

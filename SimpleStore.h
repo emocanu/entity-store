@@ -12,11 +12,6 @@ struct SimpleProperties {
     double timestamp = 0.0;
 };
 
-struct Todo {
-    int64_t id;
-    SimpleProperties props;
-};
-
 class SimpleStore {
     std::unordered_map<int64_t, SimpleProperties> m_store;
 public:
@@ -29,7 +24,8 @@ public:
     void update(int64_t id, const SimpleProperties& props);
     void remove(int64_t id);
 
-    std::vector<int64_t> queryTitle(std::string title);
+    std::vector<int64_t> query_title(std::string title);
+    std::vector<int64_t> range_query(double t1, double t2);
 private:
     std::optional<std::reference_wrapper<SimpleProperties>> get_ref(int64_t id);
 };
