@@ -51,7 +51,7 @@ static vec_string title_seed = generate_1k_strings();
 static vec_string desc_seed = generate_1k_strings();
 static std::vector<double> timestamp_seed = generate_1m_doubles();
 
-template<typename T, typename P>
+template<typename T>
 void update_titles_test(T& store) {
     TimeToRun t("update_titles_test");
     std::cout << "Starting update_titles_test...\n";
@@ -67,7 +67,7 @@ void update_titles_test(T& store) {
         }
 
         // change title of the first id
-        P p = { "Not that random string" };
+        Properties p = { "Not that random string" };
         store.update(ids[0], p);
         ids = store.query_title(title);
         int64_t afterTitleChangedCount = ids.size();
@@ -80,10 +80,10 @@ void update_titles_test(T& store) {
 
 }
 
-template<typename T, typename P>
+template<typename T>
 void init_store(T& store) {
     TimeToRun t("init_store");
-    P props;
+    Properties props;
     for (int i = 0; i < VEC_M_LEN; ++i) {
         props.title = title_seed.at(rand() % VEC_K_LEN);
         props.description = desc_seed.at(rand() % VEC_K_LEN);
@@ -95,29 +95,29 @@ void init_store(T& store) {
 void main_test() {
     std::cout << "START Store tests: \n";
     Store store;
-    init_store<Store, Properties>(store);
-    update_titles_test<Store, Properties>(store);
+    init_store<Store>(store);
+    update_titles_test<Store>(store);
     std::cout << "\n\nSTART Simple Store tests: \n";
     SimpleStore sStore;
-    init_store<SimpleStore, SimpleProperties>(sStore);
-    update_titles_test<SimpleStore, SimpleProperties>(sStore);
+    init_store<SimpleStore>(sStore);
+    update_titles_test<SimpleStore>(sStore);
 }
 
 // Release, x64
 
 //START Store tests :
-//init_store = 5.92694 seconds.
+//init_store = 6.07839 seconds.
 //Starting update_titles_test...
-//Store::query_title = 0.000117695 seconds.
-//Store::query_title = 3.3994e-05 seconds.
+//Store::query_title = 0.000123147 seconds.
+//Store::query_title = 5.6763e-05 seconds.
 //PASSED update title test
-//update_titles_test = 0.00142838 seconds.
+//update_titles_test = 0.00144858 seconds.
 //
 //
 //START Simple Store tests :
-//init_store = 3.64848 seconds.
+//init_store = 3.69318 seconds.
 //Starting update_titles_test...
-//SimpleStore::query_title = 0.0301515 seconds.
-//SimpleStore::query_title = 0.0303744 seconds.
+//SimpleStore::query_title = 0.030113 seconds.
+//SimpleStore::query_title = 0.0306736 seconds.
 //PASSED update title test
-//update_titles_test = 0.0631167 seconds.
+//update_titles_test = 0.0630103 seconds.

@@ -93,17 +93,25 @@ std::vector<int64_t> Store::query_title(std::string title)
 	TimeToRun t("Store::query_title");
 	std::vector<int64_t> ret;
 	ret.reserve(1000);
+
 	auto pair = m_equalTitle.equal_range(title);
 	for (auto it = pair.first; it != pair.second; ++it)
 		ret.emplace_back(it->second);
+	
 	return ret;
 }
 
-std::pair< mapTimestampIterator, mapTimestampIterator> Store::range_query(double t1, double t2)
+std::vector<int64_t> Store::range_query(double t1, double t2)
 {
-	auto pair1 = m_rangeTimestamp.equal_range(t1);
-	auto pair2 = m_rangeTimestamp.equal_range(t2);
-	return std::make_pair(pair1.first, pair2.second);
+	std::vector<int64_t> ret;
+	ret.reserve(1000);
+
+	for (mapTimestampIterator it = m_rangeTimestamp.lower_bound(t1);
+			it != m_rangeTimestamp.upper_bound(t2);
+			++it)
+		ret.emplace_back(it->second);
+
+	return ret;
 }
 
 std::optional<std::reference_wrapper<Properties>> Store::get_ref(int64_t id)

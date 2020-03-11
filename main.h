@@ -22,3 +22,9 @@ private:
     moment t_start;
     char const* str = nullptr;
 };
+
+struct Properties {
+    std::string title = "";
+    std::string description = "";
+    double timestamp = 0.0;
+};

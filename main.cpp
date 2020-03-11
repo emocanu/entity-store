@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iostream>
 #include "Store.h"
+#include "SimpleStore.h"
 
 extern void main_test();
 

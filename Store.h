@@ -5,13 +5,7 @@
 #include <functional>
 #include <optional>
 #include <map>
-
-struct Properties {
-    std::string title = "";
-    std::string description = "";
-    double timestamp = 0.0;
-    // can define here copy ctor
-};
+#include "main.h"
 
 using mapIterator = std::multimap <std::string, int64_t>::iterator;
 using mapTimestampIterator = std::multimap <double, int64_t>::iterator;
@@ -34,7 +28,7 @@ public:
     void update(int64_t id, const Properties& props);
     void remove(int64_t id);
     std::vector<int64_t> query_title(std::string title);
-    std::pair< mapTimestampIterator, mapTimestampIterator> range_query(double t1, double t2);
+    std::vector<int64_t> range_query(double t1, double t2);
 
 private:
     std::optional<std::reference_wrapper<Properties>> get_ref(int64_t id);
