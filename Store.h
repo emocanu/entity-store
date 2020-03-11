@@ -12,16 +12,12 @@ using mapTimestampIterator = std::multimap <double, int64_t>::iterator;
 
 class Store {
     std::unordered_map<int64_t, Properties> m_store;
-    // equal_range:
-    // std::unordered_multimap - Average case linear in the number of elements with the key key, worst case linear in the size of the container.
-    // that means bad performance for a few titles and lots of ids ... we'll gonna measure that!
+
     // std::multimap           - Logarithmic in the size of the container.
-    std::multimap <std::string, int64_t> m_equalTitle; // unordered_multimap here?
+    std::multimap <std::string, int64_t> m_equalTitle;
     std::multimap<double, int64_t> m_rangeTimestamp;
 public:
     Store();
-	Store(Store const&) = delete;
-	Store& operator=(Store const&) = delete;
 
     void insert(int64_t id, Properties props);
     std::optional<Properties> get(int64_t id);

@@ -136,24 +136,25 @@ void main_test() {
 // Release, x64
 
 //START Store tests :
-//init_store = 6.20742 seconds.
+//init_store = 5.85725 seconds.
 //Starting update_titles_test...
-//Store::query_title = 0.000158103 seconds.
-//Store::query_title = 5.8687e-05 seconds.
+//Store::query_title = 0.00011962 seconds.
+//Store::query_title = 3.4314e-05 seconds.
 //PASSED!
-//update_titles_test = 0.00155345 seconds.
+//update_titles_test = 0.00157718 seconds.
 //Starting update_timestamp_test...
 //PASSED!
-//update_timestamp_test = 0.000859143 seconds.
+//update_timestamp_test = 0.000577573 seconds.
 //
 //
 //START Simple Store tests :
-//init_store = 3.67279 seconds.
+//init_store = 3.69986 seconds.
 //Starting update_titles_test...
-//SimpleStore::query_title = 0.0308855 seconds.
-//SimpleStore::query_title = 0.0306011 seconds.
+//SimpleStore::query_title = 0.0314073 seconds.
+//SimpleStore::query_title = 0.0309539 seconds.
 //PASSED!
-//update_titles_test = 0.0638646 seconds.
+//update_titles_test = 0.0646574 seconds.
 //Starting update_timestamp_test...
 //PASSED!
-//update_timestamp_test = 0.0646782 seconds.
+//update_timestamp_test = 0.0645644 seconds.
+

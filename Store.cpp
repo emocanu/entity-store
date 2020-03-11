@@ -3,7 +3,7 @@
 
 Store::Store()
 {
-	m_store.reserve(10000);
+	m_store.reserve(1000000);
 }
 
 void Store::insert(int64_t id, Properties props)
