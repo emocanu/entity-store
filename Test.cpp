@@ -133,7 +133,7 @@ void main_test() {
     update_timestamp_test<SimpleStore>(sStore);
 }
 
-// Release, x64
+// Windows 7, Release, x64
 
 //START Store tests :
 //init_store = 5.85725 seconds.
@@ -158,3 +158,26 @@ void main_test() {
 //PASSED!
 //update_timestamp_test = 0.0645644 seconds.
 
+// Ubuntu virtual machine
+// START Store tests: 
+// init_store      = 16.0309 seconds.
+// Starting update_titles_test...
+// Store::query_title      = 0.000236647 seconds.
+// Store::query_title      = 9.0544e-05 seconds.
+// PASSED!
+// update_titles_test      = 0.000364449 seconds.
+// Starting update_timestamp_test...
+// PASSED!
+// update_timestamp_test   = 0.000892821 seconds.
+
+
+// START Simple Store tests: 
+// init_store      = 10.3168 seconds.
+// Starting update_titles_test...
+// SimpleStore::query_title        = 0.0115601 seconds.
+// SimpleStore::query_title        = 0.011084 seconds.
+// PASSED!
+// update_titles_test      = 0.0227326 seconds.
+// Starting update_timestamp_test...
+// PASSED!
+// update_timestamp_test   = 0.0341483 seconds.

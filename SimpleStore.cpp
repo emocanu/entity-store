@@ -30,7 +30,7 @@ SimpleStore& SimpleStore::create_child()
 // Time complexity: amortized constant on average, worst case linear in the size of the m_store
 void SimpleStore::insert(int64_t id, Properties props)
 {
-	auto pair = m_store.emplace(id, props);
+	m_store.emplace(id, props);
 }
 
 // Time complexity: constant on average, worst case linear in the size of the m_store
