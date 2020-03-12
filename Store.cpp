@@ -2,29 +2,8 @@
 #include "main.h"
 
 Store::Store()
-	: m_isChild(false)
 {
 	m_store.reserve(1000000);
-}
-
-Store::Store(Store const& other)
-{
-	// TODO copy also the multimaps, or better, do this in the simple map
-	m_store = other.m_store;
-	m_isChild = true;
-}
-
-Store& Store::operator=(Store const& other)
-{
-	if (this != &other) {  
-		m_store = other.m_store;
-	}
-	return *this;
-}
-
-Store& Store::create_child()
-{
-	return *this;
 }
 
 void Store::insert(int64_t id, Properties props)
@@ -134,14 +113,6 @@ std::vector<int64_t> Store::range_query(double t1, double t2)
 
 	return ret;
 }
-
-void Store::commit(Store& parent)
-{
-	// in the child store a history of modified ids
-	// then do a merge of the maps
-}
-
-
 
 std::optional<std::reference_wrapper<Properties>> Store::get_ref(int64_t id)
 {

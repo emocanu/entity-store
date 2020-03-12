@@ -7,7 +7,7 @@ extern void main_test();
 
 int main(int argc, const char *argv[])
 {
-    Store store;
+    SimpleStore store;
 
     Properties p1 = {"Buy Milk", "made of almonds!", 2392348.12233};
     store.insert(2166, p1);
@@ -27,10 +27,9 @@ int main(int argc, const char *argv[])
     
     store.remove(2166);
 
-    Store child = store.create_child();
+    SimpleStore child = store.create_child();
 
-    //main_test();
-    // TODO range query tests
+    main_test();
 
     return 0;
 }

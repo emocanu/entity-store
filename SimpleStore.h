@@ -9,10 +9,12 @@
 
 class SimpleStore {
     std::unordered_map<int64_t, Properties> m_store;
+    bool m_isChild;
 public:
     SimpleStore();
-    SimpleStore(SimpleStore const&) = delete;
-    SimpleStore& operator=(SimpleStore const&) = delete;
+    SimpleStore(SimpleStore const&);
+    SimpleStore& operator=(SimpleStore const&);
+    SimpleStore& create_child();
 
     void insert(int64_t id, Properties props);
     std::optional<Properties> get(int64_t id);
@@ -21,6 +23,7 @@ public:
 
     std::vector<int64_t> query_title(std::string title);
     std::vector<int64_t> range_query(double t1, double t2);
+    void commit(SimpleStore& parent);
 private:
     std::optional<std::reference_wrapper<Properties>> get_ref(int64_t id);
 };
