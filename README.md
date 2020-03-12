@@ -1,3 +1,44 @@
+## Here are my comments
+
+The SimpleStore relies on an unordered_map. Inserts are fast and also updates, removes.  
+Queries have linear performance, that is why on the Store I relied on additional structures.  
+Here, multimaps are storing pairs of ```{title, id}``` and ```{timestamp, id}```, making Queries much faster.  
+These things can be seen also in the simple benchmarks I've implemented.  
+
+##### Excerpts from results:  
+```
+Store
+init_store = 5.85725 seconds.
+Store::query_title = 0.00011962 seconds.
+update_titles_test = 0.00157718 seconds.
+update_timestamp_test = 0.000577573 seconds.
+
+
+Simple Store
+init_store = 3.69986 seconds.
+SimpleStore::query_title = 0.0309539 seconds
+update_titles_test = 0.0646574 seconds.
+update_timestamp_test = 0.0645644 seconds.
+
+```
+  
+### Why did I not work so happily at step 3 and 4?  
+
+#### Step 3 - nothing implemented
+I do not know the constraints of the project but I can imagine copying a whole Store being time and memory consuming.  
+I would prefer a different approach for commits and reverts. I imagine a sort of structure which keeps the needed operations and can launch them at will, e.g. an entry in that structure translates to a method call in our store.  
+I did not analyse the store API for revertness but I think is doable, for every action shall be an opposite such that the store rolls back in its initial state.  
+##### To answer your question, we have two situations here, when the copy approach is used, we simply merge multiple children, when the only one store approach is used, we use exclusive access to the one and only store (mutex, condition variable, etc)  
+
+#### Step 4  
+I cannot see a better performance than using a multimap in which regards the child stores and range query improvements.  
+  
+  
+  
+  
+## ********************** original document from here on **********************  
+
+
 # Entity Store Example Project
 
 Welcome to our sample project!
